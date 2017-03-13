@@ -6,7 +6,8 @@
   "dependencies": {
     "dotenv": "*",
     "express": "*",
-    "knox": "*"
+    "knox": "*",
+    "knox-mpu-alt": "^0.2.2"
   },
   "devDependencies": {},
   "scripts": {
