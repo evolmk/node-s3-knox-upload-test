@@ -1,76 +1,92 @@
 'use strict';
 var knox = require('knox');
-var MultiPartUpload= require('knox-mpu');
-
 var config = require('./conf/config');
 var fs = require('fs');
-var http = require('http');
+var mime = require('mime');
 
+
+//create knox s3 client
 var s3Client = knox.createClient({
-    key: config.aws_key
+  key: config.aws_key
   , secret: config.aws_secret
   , bucket: config.aws_bucket
   , region: config.aws_region
 });
 
+
 module.exports = function (server) {
+
+
 
   //setup vars & headers
 
   var filePath = 'logo-large.png';
-  var stream = fs.createReadStream(filePath);
-
+  var destPath = 'subfolder/' + filePath;
+  var mimetype = mime.lookup(filePath); //filePath.path for upload
   var headers = {
-    'Content-Type': 'application/png',
+    'Content-Type': mimetype,
+    //'Content-Length': [LENGTH-HERE],
     'x-amz-acl': 'public-read'
   };
-  // var headers = {
-  //   'Content-Length': res.headers['content-length'],
-  //   'Content-Type': res.headers['content-type']
-  // };
 
-  // upload file from path
-  http.get({ host: 'google.com', path: '/' }, function (res) {
-    var headers = {
-        'Content-Length': res.headers['content-length']
-      , 'Content-Type': res.headers['content-type']
-      , 'x-amz-acl': 'public-read'
+  console.log(mimetype);
+
+
+
+  // upload file (from path)
+
+  var progressUploadFile = false;
+
+  var file = s3Client.putFile(filePath, destPath, headers, function (err, res) {
+    if (err) {
+      console.log('Error in File Upload:');
+      console.log(err);
     };
-
-    var progressHappened = false;
-
-    var req = s3Client.putStream(res, '/google', headers, function (err, res) {
-      if (200 == res.statusCode) {
-        console.log('file saved to: %s', req.url);
-      }
-      console.log(progressHappened);
-    });
-
-    req.on('progress', function (e) {
-      progressHappened = true;
-      console.log(e);
-      console.log(e.percent + '/' + e.total + ' | ' + e.written);
-    });
-  });
-
-
-
-  // upload file from path, and set destPath (subfolder)
-  var destPath = 'subfolder/' + filePath;
-  s3Client.putFile(filePath, destPath, headers, function (err, res) {
-    console.log('\n######### Upload to subfolder #########\n');
-    if (err) throw err;
     if (200 == res.statusCode) {
-      console.log(filePath + ' saved to %s', destPath);
+      console.log('File saved to %s', destPath);
     }
-    console.log('\nheaders:');
-    console.log(res.headers);
+    console.log('File progress fired:' + progressUploadFile);
   });
+
+  file.on('progress', function (e) {
+    progressUploadFile = true;
+    console.log('File Percent:' + e.percent);
+    console.log('File Total:' + e.total);
+    console.log('File written:' + e.written);
+  });
+
+
+  // upload file (from stream)
+
+  var progressUploadStream = false;
+
+  var fileStream = fs.createReadStream(filePath);
+  var uploadStream = s3Client.putStream(fileStream, destPath, headers, function (err, res) {
+    if (err) {
+      console.log('Error in Stream Upload:');
+      console.log(err);
+    }
+    if (200 == res.statusCode) {
+      console.log('Stream saved to %s', destPath);
+    }
+    console.log('Stream progress fired:' + progressUploadStream);
+  });
+
+  uploadStream.on('progress', function (e) {
+    progressUploadStream = true;
+    console.log('Stream Percent:' + e.percent);
+    console.log('Stream Total:' + e.total);
+    console.log('Stream written:' + e.written);
+  });
+
+
 
   // get files in bucket
-  s3Client.list({}, function (err, data) {
-    console.log('\n######### Get All Files in Bucket #########\n');
-    console.log(err, data);
-  });
+  // s3Client.list({}, function (err, data) {
+  //   console.log('######### Get All Files in Bucket #########');
+  //   console.log(err, data);
+  // });
+
+
 
 };
