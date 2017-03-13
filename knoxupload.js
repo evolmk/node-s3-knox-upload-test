@@ -72,12 +72,12 @@ module.exports = function (server) {
     console.log('Stream progress fired:' + progressUploadStream);
   });
 
-  uploadStream.on('progress', function (e) {
-    progressUploadStream = true;
-    console.log('Stream Percent:' + e.percent);
-    console.log('Stream Total:' + e.total);
-    console.log('Stream written:' + e.written);
-  });
+  // uploadStream.on('progress', function (e) {
+  //   progressUploadStream = true;
+  //   console.log('Stream Percent:' + e.percent);
+  //   console.log('Stream Total:' + e.total);
+  //   console.log('Stream written:' + e.written);
+  // });
 
 
 
