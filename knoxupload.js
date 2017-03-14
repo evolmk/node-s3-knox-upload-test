@@ -61,7 +61,7 @@ module.exports = function (server) {
   var progressUploadStream = false;
 
   var fileStream = fs.createReadStream(filePath);
-  var uploadStream = s3Client.putStream(fileStream, destPath, headers, function (err, res) {
+  s3Client.putStream(fileStream, destPath, headers, function (err, res) {
     if (err) {
       console.log('Error in Stream Upload:');
       console.log(err);
