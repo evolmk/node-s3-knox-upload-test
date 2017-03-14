@@ -1,0 +1,16 @@
+{
+  "name": "node-s3-knox-upload-test",
+  "version": "0.0.1",
+  "main": "server.js",
+  "dependencies": {
+    "angular": "~1.6.3",
+    "angular-route": "latest",
+    "angular-resource": "latest",
+    "angular-ui-utils": "latest",
+    "angular-slimscroll": "latest",
+    "angular-ui-router": "latest",
+    "moment": "latest",
+    "angular-modal-service": "latest",
+    "angular-animate": "^1.6.3"
+  }
+}

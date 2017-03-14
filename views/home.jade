@@ -1,0 +1,24 @@
+extends includes/layout
+
+block content
+  H1 Heading
+  p some text
+  ul(class="list")
+    li List 1
+    li List 2
+    li List 4
+
+
+block content
+  h1 Upload Test
+  .panel.panel-default
+    .panel-heading
+      Heading
+    .panel-body
+      form
+        .form-group
+          label.col-sm-2.control-label Upload/Crop:
+          .col-sm-10
+            div.progress.progress-striped(ng-show="progress > 0")
+              span {{progress}} % Complete
+              div.progress-bar(style="width: {{progress}}%;", ng-class="{'progress-bar-success': progress == 100}")

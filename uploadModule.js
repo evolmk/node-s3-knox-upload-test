@@ -1,9 +1,7 @@
-'use strict';
 var knox = require('knox');
 var config = require('./conf/config');
 var fs = require('fs');
 var mime = require('mime');
-
 
 //create knox s3 client
 var s3Client = knox.createClient({
@@ -13,9 +11,45 @@ var s3Client = knox.createClient({
   , region: config.aws_region
 });
 
+exports.upload = function uploadS3(req, res, next) {
+  var file = req.files.file;
+  var stream = fs.createReadStream(file.path);
+  var mimetype = mime.lookup(file.path);
+  //var req;
 
-module.exports = function (server) {
+  if (mimetype.localeCompare('image/jpeg')
+    || mimetype.localeCompare('image/pjpeg')
+    || mimetype.localeCompare('image/png')
+    || mimetype.localeCompare('image/gif')) {
 
+    req = knox.putStream(stream, file.name,
+      {
+        'Content-Type': mimetype,
+        'Cache-Control': 'max-age=604800',
+        'x-amz-acl': 'public-read',
+        'Content-Length': file.size
+      },
+      function (err, result) {
+        console.log(result);
+      }
+    );
+  } else {
+    next(new HttpError(HTTPStatus.BAD_REQUEST))
+  }
+
+  req.on('response', function (res) {
+    if (res.statusCode == HTTPStatus.OK) {
+      res.json('url: ' + req.url)
+    } else {
+      next(new HttpError(res.statusCode))
+    }
+  });
+
+};
+
+
+
+exports.uploadTest = function uploadS3Test(req, res, next) {
 
 
   //setup vars & headers

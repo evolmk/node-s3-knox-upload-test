@@ -1,0 +1,18 @@
+doctype
+html(ng-app='myApp')
+  head
+    title=title || 'Default Title'
+    meta(name='description' content='#{description || "Default description"}')
+
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u', crossorigin='anonymous')
+    link(rel='stylesheet', type='text/css', href='css/app.css')
+
+  body
+    block content
+
+    script(src='angular/angular.js')
+    script(src='angular-route/angular-route.min.js')
+    script(src='angular-ui-router/release/angular-ui-router.min.js')
+    script(src='angular-resource/angular-resource.min.js')
+
+    script(src='app.js')

@@ -4,10 +4,14 @@
   "description": "Simple Upload File Test to Amazon S3 using Node & Knox",
   "main": "knoxupload.js",
   "dependencies": {
+    "bower": "latest",
     "dotenv": "*",
     "express": "*",
     "knox": "*",
-    "mime": "^1.3.4"
+    "mime": "^1.3.4",
+    "jade": "~1.11.0",
+    "body-parser": "~1.13.2",
+    "multer": "^1.1.0"
   },
   "devDependencies": {},
   "scripts": {
